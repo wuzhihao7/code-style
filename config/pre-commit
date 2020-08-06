@@ -1,0 +1,10 @@
+#!/bin/sh
+
+# validate code style
+mvn spotless:check
+
+# store the last exit code in a variable
+RESULT=$?
+
+# return exit code
+exit $RESULT

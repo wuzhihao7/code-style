@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.ysepay.settle</groupId>
+    <artifactId>code-style</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
+    <properties>
+        <encoding>UTF-8</encoding>
+        <project.build.sourceEncoding>${encoding}</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>${encoding}</project.reporting.outputEncoding>
+        <jdk.version>11</jdk.version>
+        <jdk.version.compatibility>8</jdk.version.compatibility>
+        <maven.enforcer.plugin.version>3.0.0-M2</maven.enforcer.plugin.version>
+        <maven.compiler.plugin.version>3.8.1</maven.compiler.plugin.version>
+        <maven.javadoc.plugin.version>3.2.0</maven.javadoc.plugin.version>
+        <maven.source.plugin.version>3.2.0</maven.source.plugin.version>
+        <maven.pmd.plugin.version>3.13.0</maven.pmd.plugin.version>
+        <p3c.pmd.version>1.3.6</p3c.pmd.version>
+        <spotless.maven.plugin.version>2.0.1</spotless.maven.plugin.version>
+    </properties>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <version>${maven.enforcer.plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>enforce-versions</id>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <banDuplicatePomDependencyVersions/>
+                                <dependencyConvergence>
+                                    <uniqueVersions>true</uniqueVersions>
+                                </dependencyConvergence>
+                                <requireJavaVersion>
+                                    <version>${jdk.version}</version>
+                                </requireJavaVersion>
+                                <requireProperty>
+                                    <property>project.build.sourceEncoding</property>
+                                    <message>Encoding must be set and at UTF-8!</message>
+                                    <regex>UTF-8</regex>
+                                    <regexMessage>Encoding must be set and at UTF-8</regexMessage>
+                                </requireProperty>
+                            </rules>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven.compiler.plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>default-compile</id>
+                        <configuration>
+                            <!-- compile everything to ensure module-info contains right entries -->
+                            <release>${jdk.version}</release>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>base-compile</id>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                        <!-- recompile everything for target VM except the module-info.java -->
+                        <configuration>
+                            <excludes>
+                                <exclude>module-info.java</exclude>
+                            </excludes>
+                        </configuration>
+                    </execution>
+                </executions>
+                <!-- defaults for compile and testCompile -->
+                <configuration>
+                    <!-- Only required when JAVA_HOME isn't at least Java 9 and when haven't configured the maven-toolchains-plugin -->
+                    <jdkToolchain>
+                        <version>${jdk.version}</version>
+                    </jdkToolchain>
+                    <release>${jdk.version.compatibility}</release>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>${maven.source.plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>${maven.javadoc.plugin.version}</version>
+                <configuration>
+                    <show>private</show>
+                    <nohelp>true</nohelp>
+                    <encoding>${encoding}</encoding>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-pmd-plugin</artifactId>
+                <version>${maven.pmd.plugin.version}</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.alibaba.p3c</groupId>
+                        <artifactId>p3c-pmd</artifactId>
+                        <version>${p3c.pmd.version}</version>
+                    </dependency>
+                </dependencies>
+                <configuration>
+                    <linkXRef>false</linkXRef>
+                    <printFailingErrors>true</printFailingErrors>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>validate</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>com.diffplug.spotless</groupId>
+                <artifactId>spotless-maven-plugin</artifactId>
+                <version>${spotless.maven.plugin.version}</version>
+                <configuration>
+                    <!-- optional: limit format enforcement to just the files changed by this feature branch -->
+                    <ratchetFrom>origin/main</ratchetFrom>
+                    <formats>
+                        <!-- you can define as many formats as you want, each is independent -->
+                        <format>
+                            <!-- define the files to apply to -->
+                            <includes>
+                                <include>*.md</include>
+                                <include>.gitignore</include>
+                            </includes>
+                            <!-- define the steps to apply to those files -->
+                            <trimTrailingWhitespace/>
+                            <endWithNewline/>
+                            <indent>
+                                <tabs>true</tabs>
+                                <spacesPerTab>4</spacesPerTab>
+                            </indent>
+                        </format>
+                    </formats>
+                    <!-- define a language-specific format -->
+                    <java>
+                        <!-- no need to specify files, inferred automatically, but you can if you want -->
+
+                        <!-- apply a specific flavor of google-java-format -->
+                        <googleJavaFormat>
+                            <version>1.8</version>
+                            <style>GOOGLE</style>
+                        </googleJavaFormat>
+
+                        <!-- make sure every file has the following copyright header.
+                          optionally, Spotless can set copyright years by digging
+                          through git history (see "license" section below) -->
+                        <licenseHeader>
+                            <content>/* (C)$YEAR */</content>  <!-- or <file>${basedir}/license-header</file> -->
+                        </licenseHeader>
+                    </java>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>dev</id>
+            <properties>
+                <profileActive>dev</profileActive>
+            </properties>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+        </profile>
+        <profile>
+            <id>prod</id>
+            <properties>
+                <profileActive>prod</profileActive>
+            </properties>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+        </profile>
+    </profiles>
+
+    <!-- 配置使用公司私服进行Jar上传,releases为发布版上传路径,snapshot为快照版上传路径 -->
+    <distributionManagement>
+        <repository>
+            <id>proj-releases</id>
+            <name>Proj Release Repository</name>
+            <url>
+                http://10.213.32.58:8081/nexus/content/repositories/ysepay/
+            </url>
+        </repository>
+        <snapshotRepository>
+            <id>proj-snapshot</id>
+            <name>Proj Snapshot Repository</name>
+            <url>
+                http://10.213.32.58:8081/nexus/content/repositories/snapshots/
+            </url>
+        </snapshotRepository>
+    </distributionManagement>
+</project>
