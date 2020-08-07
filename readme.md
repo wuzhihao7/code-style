@@ -1,8 +1,12 @@
 # 编码约定
 
+## 前言
+
 工欲善其事必先利其器
 
 使用google编码规约（主要是google提供了一系列插件，可以通过自动化检测代码规范）
+
+期待大家把开发过程中遇到的坑点提出来，一起致力于搭建友好的开发环境
 
 ## 源文件编码
 强制使用UTF-8
@@ -12,7 +16,7 @@
 
 1. 使用toolchains管理jdk版本
 
-将config/toolchains.xml文件放到maven_home目录下，调整相应jdk安装路径即可，具体参考(maven-toolchains-plugin)[https://maven.apache.org/plugins/maven-toolchains-plugin/usage.html]
+将config/toolchains.xml文件放到maven_home目录下，调整相应jdk安装路径即可，具体参考[maven-toolchains-plugin](https://maven.apache.org/plugins/maven-toolchains-plugin/usage.html)
 
 ## 代码仓库
 
@@ -28,9 +32,7 @@
 
 2. 分包规则：原来的分包规则是直接按分层架构分包，代码量增大以后，会出现一个包下全是各种dao、service，阅读代码比较不友好，更好的分包规则是基于业务模块或者功能模块进行分包，这样分包后，代码更加自明，通过这样的分包规则可以在查阅代码的时候更加高效，同时有助于理解代码
 
-分包规则相关可以参考：
-
-(模式包结构)[https://www.cnkirito.moe/Re-DDD/]
+分包规则相关可以参考：[模式包结构](https://www.cnkirito.moe/Re-DDD)
 
 ## 关于依赖
 
@@ -38,17 +40,23 @@
 
 ## 统一异常类
 
-...
+可以定义清算组的顶层异常类，然后其他自定义异常都继承于改异常类。
+
+这样做以后可以在dubbo端做一个filter，统一异常处理，所有接口都抛出这个顶层的异常类，可以避免dubbo重新包装异常
 
 ## 分布式调用链路跟踪
 
-
+使用requestid贯穿整个调用链路，便于日志定位分析排查问题
 
 ## 关于IDE
 
-强烈推荐Intellij Idea，上手以后你会发现真香，附上相关教程(idea)[https://blog.csdn.net/qq_35246620/article/details/61191375]
+强烈推荐Intellij Idea，上手以后你会发现真香，附上相关教程[idea](https://blog.csdn.net/qq_35246620/article/details/61191375)
 
 当然也可以选择其他的：eclipse、netbean、vscode等
+
+## 单元测试
+
+...
 
 ## 参考链接
 [spotless-maven-plugin](https://github.com/diffplug/spotless/tree/main/plugin-maven#line-endings-and-encodings-invisible-stuff)
