@@ -18,6 +18,14 @@
 
 将config/toolchains.xml文件放到maven_home目录下，调整相应jdk安装路径即可，具体参考[maven-toolchains-plugin](https://maven.apache.org/plugins/maven-toolchains-plugin/usage.html)
 
+## 脚本
+
+| init.sh/init.bat   | 将pre-commit文件拷贝到当前项目的.git/hooks中，用于commit前检查代码规范 |
+| ------------------ | ------------------------------------------------------------ |
+| build.sh/build.bat | 打包脚本，可以传入参数指定构建配置组，默认dev，可根据需要在pom.xml中添加修改 |
+
+建议本地安装git shell，基本可以满足日常开发使用
+
 ## 代码仓库
 
 1. 使用.gitignore文件忽略与源码无关的版本控制

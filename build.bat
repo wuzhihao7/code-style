@@ -1,9 +1,9 @@
 @echo off
 set PROFILE=%1
 if "%PROFILE%" == "" (
-    echo profile:local
-    mvn clean package -Plocal -DskipTests
-    echo profile:local
+    echo profile:dev
+    mvn clean package -Pdev -DskipTests
+    echo profile:dev
     pause
 ) else (
     echo profile:%PROFILE%
